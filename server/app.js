@@ -39,8 +39,8 @@ passport.deserializeUser((user, done) => done(null, user))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(bodyParser.json())
-app.use('/api', message)
-app.use('/api', user)
+app.use('/api/v1', message)
+app.use('/api/v1', user)
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html')
