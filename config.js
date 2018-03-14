@@ -6,7 +6,6 @@ module.exports = {
   facebook: {
     clientID: '169230190394244',
     clientSecret: '46dcdae33520522b24242286e6df0218',
-    // callbackURL: 'http://192.168.1.109:3000/auth/facebook/callback',
     callbackURL: 'https://limitless-gorge-54663.herokuapp.com/auth/facebook/callback',
     profileFields: ['id', 'name', 'displayName', 'picture', 'email']
   }

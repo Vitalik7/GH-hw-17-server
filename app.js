@@ -1,16 +1,14 @@
+const app = require('express')()
 const http = require('http').Server(app)
 const bodyParser = require('body-parser')
 const io = require('socket.io')(http)
-const MessageModel = require('./message/model')
-const message = require('./message/message')
+const config = require('./config')
+const MessageModel = require('./chat/model')
+const message = require('./chat/chat')
+const user = require('./registaration/registaration')
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook')
 const facebook = config.facebook
-
-const config = require('./config')
-const user = require('./registration/registration')
-
-const app = require('express')()
 
 require('./db')
 
@@ -39,8 +37,8 @@ passport.deserializeUser((user, done) => done(null, user))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(bodyParser.json())
-app.use('/api/v1', message)
-app.use('/api/v1', user)
+app.use('/api', message)
+app.use('/api', user)
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html')
