@@ -10,9 +10,7 @@ router.get('/users', (req, res, next) => {
         .then(events => {
           res.json({events})
         })
-        .catch((e) => {
-          res.status(400).send(e)
-        })
+        .catch(next)
 })
 
 router.post('/login',
