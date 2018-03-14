@@ -22,16 +22,13 @@ const transformFacebookProfile = (profile) => ({
 })
 
 passport.use(new FacebookStrategy(facebook,
-    // Gets called when user authorizes access to their profile
     async function (accessToken, refreshToken, profile, done) {
       done(null, transformFacebookProfile(profile._json))
     }
 ))
 
-// Serialize user into the sessions
 passport.serializeUser((user, done) => done(null, user))
 
-// Deserialize user from the sessions
 passport.deserializeUser((user, done) => done(null, user))
 
 app.use(passport.initialize())
@@ -46,7 +43,6 @@ app.get('/', function (req, res) {
 
 app.get('/auth/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/auth/facebook' }),
-    // Redirect user back to the mobile app using Linking with a custom protocol OAuthLogin
     (req, res) => {
       res.redirect('OAuthLogin://login?user=' + JSON.stringify(req.user))
     })
