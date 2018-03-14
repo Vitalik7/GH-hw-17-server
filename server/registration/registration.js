@@ -5,15 +5,14 @@ const User = require('./model')
 
 const router = express.Router()
 
-router.get('/users', (req, res) => {
-  User.find().then((users) => {
-    if (!users) {
-      return res.status(404).send()
-    }
-    res.send({users})
-  }).catch((e) => {
-    res.status(400).send(e)
-  })
+router.get('/users', (req, res, next) => {
+  User.find()
+        .then(events => {
+          res.json({events})
+        })
+        .catch((e) => {
+          res.status(400).send(e)
+        })
 })
 
 router.post('/login',
