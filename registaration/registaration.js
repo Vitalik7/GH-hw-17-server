@@ -23,20 +23,24 @@ router.post('/login',
         res.json({'status': 404, 'message': 'Not Found.'})
       }
 
-      bcrypt.compare(req.body.user.password, user.password, function (err, result) {
-        if (result === true) {
-          res.json({'user': {'_id': user._id, 'email': user.email, 'name': user.name}})
-        } else {
-          res.json({'status': 404, 'message': 'Not Found.'})
-        }
-      })
+      let securPassword = req.body.user.password
+
+      window.btoa(unescape(securPassword));
+
+      // bcrypt.compare(req.body.user.password, user.password, function (err, result) {
+      //   if (result === true) {
+      //     res.json({'user': {'_id': user._id, 'email': user.email, 'name': user.name}})
+      //   } else {
+      //     res.json({'status': 404, 'message': 'Not Found.'})
+      //   }
+      // })
     })
 
 router.post('/users', (req, res, next) => {
   let data = req.body.user
   let password = data.password
 
-  window.btoa(unescape(encodeURIComponenet(password)));
+  window.btoa(unescape(password));
 
   new User(data)
         .save()
