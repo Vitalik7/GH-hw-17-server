@@ -34,18 +34,16 @@ router.post('/login',
 
 router.post('/users', (req, res, next) => {
   let data = req.body.user
+  let password = data.password
 
-  bcrypt.genSalt(10, function (err, salt) {
-    bcrypt.hash(data.password, salt, function (err, hash) {
-      data.password = hash
-      new User(data)
-            .save()
-            .then(user => {
-              res.json({user})
-            })
-            .catch(next)
-    })
-  })
+  window.btoa(unescape(encodeURIComponenet(password)));
+
+  new User(data)
+        .save()
+        .then(user => {
+          res.json({user})
+        })
+        .catch(next)
 })
 
 module.exports = router
