@@ -35,7 +35,8 @@ router.post('/login',
 router.post('/users', (req, res, next) => {
   let data = req.body.user
 
-  console.log(data.password);
+  console.log(req.body.user.password);
+
   bcrypt.genSalt(10, function (err, salt) {
     bcrypt.hash(data.password, salt, function (err, hash) {
       data.password = hash
