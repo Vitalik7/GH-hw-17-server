@@ -1,13 +1,18 @@
 const app = require('express')()
+
+const path = require('path')
 const http = require('http').Server(app)
 const bodyParser = require('body-parser')
 const io = require('socket.io')(http)
-const config = require('./config')
+
+const passport = require('passport')
+const FacebookStrategy = require('passport-facebook')
+
 const MessageModel = require('./chat/model')
 const message = require('./chat/chat')
 const user = require('./registaration/registaration')
-const passport = require('passport')
-const FacebookStrategy = require('passport-facebook')
+
+const config = require('./config')
 const facebook = config.facebook
 
 require('./db')
@@ -22,9 +27,9 @@ const transformFacebookProfile = (profile) => ({
 })
 
 passport.use(new FacebookStrategy(facebook,
-    async function (accessToken, refreshToken, profile, done) {
-      done(null, transformFacebookProfile(profile._json))
-    }
+  async function (accessToken, refreshToken, profile, done) {
+    done(null, transformFacebookProfile(profile._json))
+  }
 ))
 
 passport.serializeUser((user, done) => done(null, user))
@@ -34,28 +39,28 @@ passport.deserializeUser((user, done) => done(null, user))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(bodyParser.json())
-app.use('/api', message)
-app.use('/api', user)
+app.use('/api/v1/messages', message)
+app.use('/api/v1/users', user)
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html')
+  res.sendFile(path.join(__dirname, '/index.html'))
 })
 
 app.get('/auth/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/auth/facebook' }),
-    (req, res) => {
-      res.redirect('OAuthLogin://login?user=' + JSON.stringify(req.user))
-    })
+  passport.authenticate('facebook', { failureRedirect: '/auth/facebook' }),
+  (req, res) => {
+    res.redirect('OAuthLogin://login?user=' + JSON.stringify(req.user))
+  })
 
 io.on('connection', function (socket) {
   console.log('a user connected')
   socket.on('chat message', function (msg) {
     console.log('incoming msg: ' + JSON.stringify(msg))
     new MessageModel(msg)
-          .save()
-        .then(message => {
-          io.emit('chat message', message)
-        })
+      .save()
+      .then(message => {
+        io.emit('chat message', message)
+      })
   })
 
   socket.on('disconnect', function () {
