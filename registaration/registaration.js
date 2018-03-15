@@ -36,15 +36,15 @@ router.post('/login',
   router.post('/users', (req, res, next) => {
     let data = req.body.user
 
-      window.btoa(data.password, salt, function (err, hash) {
-        data.password = hash
+      window.btoa(data.password)
+
         new User(data)
               .save()
               .then(user => {
                 res.json({user})
               })
               .catch(next)
-      })
+
   })
 
 module.exports = router
