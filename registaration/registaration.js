@@ -33,18 +33,18 @@ router.post('/login',
       })
     })
 
-router.post('/users', (req, res, next) => {
-  let data = req.body.user
-  let password = data.password
+  router.post('/users', (req, res, next) => {
+    let data = req.body.user
 
-  window.btoa(password);
-
-  new User(data)
-        .save()
-        .then(user => {
-          res.json({user})
-        })
-        .catch(next)
-})
+      window.btoa(data.password, salt, function (err, hash) {
+        data.password = hash
+        new User(data)
+              .save()
+              .then(user => {
+                res.json({user})
+              })
+              .catch(next)
+      })
+  })
 
 module.exports = router
