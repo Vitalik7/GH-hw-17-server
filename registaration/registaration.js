@@ -1,6 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-const CryptoJS = require("crypto-js");
+const btoa = require('btoa')
 const User = require('./model')
 const router = express.Router()
 
@@ -36,26 +36,17 @@ router.post('/login',
   router.post('/users', (req, res, next) => {
     let data = req.body.user
 
-    // Encrypt
-    var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data.password), 'secret key');
-
-    // Decrypt
-    var bytes  = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret key');
-    var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
-    console.log(decryptedData);
-
-    // bcrypt.genSalt(10, function (err, salt) {
-    //   bcrypt.hash(data.password, salt, function (err, hash) {
-    //     data.password = hash
+    bcrypt.genSalt(10, function (err, salt) {
+      bcrypt.hash(data.password, salt, function (err, hash) {
+        data.password = hash
         new User(data)
               .save()
               .then(user => {
                 res.json({user})
               })
               .catch(next)
-    //   })
-    // })
+      })
+    })
   })
 
 module.exports = router
